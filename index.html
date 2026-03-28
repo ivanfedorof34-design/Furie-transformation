@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Анализ временных рядов (FFT)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 16px;
+            margin-top: 12px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        canvas {
+            margin-top: 25px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .error {
+            color: red;
+            margin-top: 12px;
+        }
+
+        .success {
+            color: green;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Анализ временных рядов (FFT)</h1>
+
+    <input type="file" id="fileInput" accept=".csv" />
+    <br />
+    <button id="uploadBtn">Загрузить CSV</button>
+    <button id="fftBtn" disabled>Выполнить FFT</button>
+
+    <div id="message"></div>
+
+    <h2>Исходный сигнал</h2>
+    <canvas id="signalChart"></canvas>
+
+    <h2>Спектр частот</h2>
+    <canvas id="fftChart"></canvas>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
