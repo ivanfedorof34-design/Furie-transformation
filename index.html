@@ -25,6 +25,29 @@
             margin-bottom: 20px;
         }
 
+        .title-with-tooltip,
+        .label-with-tooltip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+
+        .button-with-tooltip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         button {
             padding: 10px 16px;
             margin-top: 12px;
@@ -38,6 +61,11 @@
 
         button:hover {
             background: #0056b3;
+        }
+
+        button:disabled {
+            background: #8fbdf0;
+            cursor: not-allowed;
         }
 
         canvas {
@@ -57,23 +85,140 @@
             color: green;
             margin-top: 12px;
         }
+
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tooltip-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            cursor: help;
+            outline: none;
+        }
+
+        .tooltip-icon:focus {
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: 260px;
+            background: rgba(0, 0, 0, 0.88);
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 100;
+            bottom: 135%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.2s ease;
+            font-size: 13px;
+            line-height: 1.45;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        .tooltip:hover .tooltip-text,
+        .tooltip:focus-within .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.88) transparent transparent transparent;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Анализ временных рядов (FFT)</h1>
+    <h1 class="title-with-tooltip">
+        <span>Анализ временных рядов (FFT)</span>
+        <span class="tooltip">
+            <span class="tooltip-icon" tabindex="0" aria-label="Подсказка о приложении">?</span>
+            <span class="tooltip-text">
+                Приложение загружает сигнал из CSV-файла, строит график исходных данных и показывает спектр после быстрого преобразования Фурье.
+            </span>
+        </span>
+    </h1>
 
-    <input type="file" id="fileInput" accept=".csv" />
+    <div class="label-with-tooltip">
+        <label for="fileInput">Выберите CSV-файл</label>
+        <span class="tooltip">
+            <span class="tooltip-icon" tabindex="0" aria-label="Подсказка о формате CSV">?</span>
+            <span class="tooltip-text">
+                CSV-файл должен содержать числовые значения сигнала. Обычно используется один столбец с отсчётами временного ряда.
+            </span>
+        </span>
+    </div>
     <br />
-    <button id="uploadBtn">Загрузить CSV</button>
-    <button id="fftBtn" disabled>Выполнить FFT</button>
+    <input type="file" id="fileInput" accept=".csv" />
+
+    <div class="controls">
+        <div class="button-with-tooltip">
+            <button id="uploadBtn">Загрузить CSV</button>
+            <span class="tooltip">
+                <span class="tooltip-icon" tabindex="0" aria-label="Подсказка о загрузке CSV">?</span>
+                <span class="tooltip-text">
+                    Отправляет выбранный CSV-файл на сервер для чтения и подготовки данных к построению графика.
+                </span>
+            </span>
+        </div>
+
+        <div class="button-with-tooltip">
+            <button id="fftBtn" disabled>Выполнить FFT</button>
+            <span class="tooltip">
+                <span class="tooltip-icon" tabindex="0" aria-label="Подсказка о FFT">?</span>
+                <span class="tooltip-text">
+                    Запускает быстрое преобразование Фурье. Кнопка станет активной после успешной загрузки файла.
+                </span>
+            </span>
+        </div>
+    </div>
 
     <div id="message"></div>
 
-    <h2>Исходный сигнал</h2>
+    <h2 class="title-with-tooltip">
+        <span>Исходный сигнал</span>
+        <span class="tooltip">
+            <span class="tooltip-icon" tabindex="0" aria-label="Подсказка об исходном сигнале">?</span>
+            <span class="tooltip-text">
+                Здесь отображаются исходные отсчёты сигнала из CSV-файла. По оси X обычно идёт индекс отсчёта, по оси Y — значение сигнала.
+            </span>
+        </span>
+    </h2>
     <canvas id="signalChart"></canvas>
 
-    <h2>Спектр частот</h2>
+    <h2 class="title-with-tooltip">
+        <span>Спектр частот</span>
+        <span class="tooltip">
+            <span class="tooltip-icon" tabindex="0" aria-label="Подсказка о спектре частот">?</span>
+            <span class="tooltip-text">
+                Здесь показывается результат FFT. Выраженные пики обычно соответствуют частотам, которые сильнее всего присутствуют в исходном сигнале.
+            </span>
+        </span>
+    </h2>
     <canvas id="fftChart"></canvas>
 </div>
 
